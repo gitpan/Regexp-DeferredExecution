@@ -3,7 +3,7 @@ package Regexp::DeferredExecution;
 use strict;
 use vars qw($VERSION);
 
-$VERSION = '0.03';
+$VERSION = '0.04';
 
 use Text::Balanced qw( extract_multiple
 		       extract_codeblock
@@ -43,7 +43,7 @@ sub convert {
                              (.*)
                              \} \Z
                             /{
-  local \@Regexp::DeferredExecution::c;
+  local \@Regexp::DeferredExecution::c = \@Regexp::DeferredExecution::c;
   push \@Regexp::DeferredExecution::c, [\$^N, q{$1}];
 }/msx;
 	}
@@ -75,7 +75,7 @@ Regexp::DeferredExecution - Defer execution of C<(?{})> codeblocks until the end
 
 =head1 SYNOPSIS
 
-  use Regexp::Deferred;
+  use Regexp::DeferredExecution;
   "foobar" =~
     /(?:foo (?{ warn "matched foo!" }) ) d
      |
@@ -96,11 +96,11 @@ code would normally be executed immediately, even though the final
 successful match does not include the C<foo> subpattern nor it's
 associated code.  Sometimes, that's not the desired behavior.
 
-Regexp::Deferred overrides the C<qr> function such that all of the
-code blocks get deferred until the very end of the match, at which
-time only the blocks participating in the overall successful match are
-executed.  That doesn't sound like much, but it does allow you to
-change this:
+Regexp::DeferredExecution overrides the C<qr> function such that all
+of the code blocks get deferred until the very end of the match, at
+which time only the blocks participating in the overall successful
+match are executed.  That doesn't sound like much, but it does allow
+you to change this:
 
   if(m/ (fee) .* (fie) .* (foe) .* (fum) /x) {
       ($fee, $fie, $foe, $fum) = ($1, $2, $3, $4);

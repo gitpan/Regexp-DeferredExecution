@@ -1,5 +1,11 @@
 Revision history for Regexp::DeferredExecution.
 
+0.04  Fri Jan 16 12:03:44 2004
+	- bug fix to make multiple code blocks work again; local @c
+          was obliterating everything (fix local @c = @c).
+	- more POD fixes (thanks to Mike Castle for pointing some
+          out some remaining Regexp::Deferred misnomers).
+
 0.03  Wed Jan 14 09:22:28 2004
 	- stack was misnamed @Regexp::Deferred::C; fixed.
 	- various POD fixes, cleanups.
