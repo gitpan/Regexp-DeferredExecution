@@ -3,7 +3,7 @@ package Regexp::DeferredExecution;
 use strict;
 use vars qw($VERSION);
 
-$VERSION = '0.02';
+$VERSION = '0.03';
 
 use Text::Balanced qw( extract_multiple
 		       extract_codeblock
@@ -43,8 +43,8 @@ sub convert {
                              (.*)
                              \} \Z
                             /{
-  local \@Regexp::Deferred::c;
-  push \@Regexp::Deferred::c, [\$^N, q{$1}];
+  local \@Regexp::DeferredExecution::c;
+  push \@Regexp::DeferredExecution::c, [\$^N, q{$1}];
 }/msx;
 	}
     }
@@ -53,9 +53,9 @@ sub convert {
 
     # install the stack storage and execution code:
     $re = "(?{
-  local \@Regexp::Deferred::c = ();
+  local \@Regexp::DeferredExecution::c = ();
 })$re(?{
-  for (\@Regexp::Deferred::c) {
+  for (\@Regexp::DeferredExecution::c) {
     \$^N = \$\$_[0];
     eval \$\$_[1];
   }
@@ -71,7 +71,7 @@ __END__
 
 =head1 NAME
 
-Regexp::Deferred - defer execution of C<(?{})> codeblock until end of match
+Regexp::DeferredExecution - Defer execution of C<(?{})> codeblocks until the end of a successful match
 
 =head1 SYNOPSIS
 
@@ -88,16 +88,19 @@ Regexp::Deferred - defer execution of C<(?{})> codeblock until end of match
 =head1 DESCRIPTION
 
 The Perl regular expression engine provides a special embedded
-pattern, (?{ <code> }), that immediately executes <code> when the
-pattern is used during the matching process.  In the L<SYNOPSIS>
-example, the initial C<foo> pattern is initially matched by the
-regular expression engine, and the associated code would normally be
-executed immediately.  Regexp::Deferred overrides the C<qr> function
-such that all of the code blocks get deferred until the very end of
-the match, at which time only the blocks participating in the overall
-successful match are executed.
+pattern, C<(?{ E<lt>codeE<gt> })>, that immediately executes
+C<E<lt>codeE<gt>> if and when the pattern is used during the matching
+process.  In the L<SYNOPSIS> example, the initial C<foo> subpattern is
+initially matched by the regular expression engine, and the associated
+code would normally be executed immediately, even though the final
+successful match does not include the C<foo> subpattern nor it's
+associated code.  Sometimes, that's not the desired behavior.
 
-That doesn't sound like much, but it does allow you to change this:
+Regexp::Deferred overrides the C<qr> function such that all of the
+code blocks get deferred until the very end of the match, at which
+time only the blocks participating in the overall successful match are
+executed.  That doesn't sound like much, but it does allow you to
+change this:
 
   if(m/ (fee) .* (fie) .* (foe) .* (fum) /x) {
       ($fee, $fie, $foe, $fum) = ($1, $2, $3, $4);
@@ -115,21 +118,21 @@ into:
 Which means that adding new sets of capturing parentheses doesn't
 require the counting exercise to figure out which set is $1, $2, etc.
 
-Of course this mechanism isn't specific to assigning from $^N; there's
-no doubt a bunch of other clever things you can do with this as well;
-I'll let you know as I run into them.
+Of course this mechanism isn't specific to code that makes assignments
+from $^N; there's no doubt a bunch of other clever things you can do
+with this as well. I'll let you know as I run into them.
 
 =head1 USAGE
 
-Like any other package that overload core functionality, you can turn
+Like any other package that overloads core functionality, you can turn
 it on and off via "use" and "no" statements.
 
 =head1 BUGS
 
-Note that currently, only the currently active $^N matching variable
-is stored for delayed access (e.g. don't try to access other special
-regexp variables from within a C<(?{})> code block, because they might
-not be as you'd expect).
+Note that only the currently active $^N matching variable is kept for
+delayed access (e.g. don't try to access other special regexp
+variables from within a C<(?{})> code block, because they might not be
+as you'd expect).  Not really a bug, just a lack of features.
 
 None so far, but it's still early.
 

@@ -1,5 +1,9 @@
 Revision history for Regexp::DeferredExecution.
 
+0.03  Wed Jan 14 09:22:28 2004
+	- stack was misnamed @Regexp::Deferred::C; fixed.
+	- various POD fixes, cleanups.
+
 0.02  Tue Jan 13 18:24:39 2004
 	- simplified @Regexp::DeferredExecution::c code stack, very
           slight speed improvement.
