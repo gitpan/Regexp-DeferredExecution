@@ -1,6 +1,11 @@
-Revision history for Perl extension Regexp::DeferredExecution.
+Revision history for Regexp::DeferredExecution.
+
+0.02  Tue Jan 13 18:24:39 2004
+	- simplified @Regexp::DeferredExecution::c code stack, very
+          slight speed improvement.
 
 0.01  Tue Jan 13 10:34:26 2004
-	- original version; created by h2xs 1.23 with options
-		-PAXn Regexp::DeferredExecution
+
+	- original version; created by h2xs 1.23 with options -PAXn
+          Regexp::DeferredExecution
 

@@ -3,7 +3,7 @@ package Regexp::DeferredExecution;
 use strict;
 use vars qw($VERSION);
 
-$VERSION = '0.01';
+$VERSION = '0.02';
 
 use Text::Balanced qw( extract_multiple
 		       extract_codeblock
@@ -43,8 +43,8 @@ sub convert {
                              (.*)
                              \} \Z
                             /{
-  local \$Regexp::Deferred::c;
-  \$Regexp::Deferred::c[\$Regexp::Deferred::c++] = [\$^N, q{$1}];
+  local \@Regexp::Deferred::c;
+  push \@Regexp::Deferred::c, [\$^N, q{$1}];
 }/msx;
 	}
     }
@@ -53,7 +53,7 @@ sub convert {
 
     # install the stack storage and execution code:
     $re = "(?{
-  local (\$Regexp::Deferred::c, \@Regexp::Deferred::c) = (0, undef);
+  local \@Regexp::Deferred::c = ();
 })$re(?{
   for (\@Regexp::Deferred::c) {
     \$^N = \$\$_[0];
