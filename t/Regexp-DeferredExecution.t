@@ -1,5 +1,5 @@
 
-use Test::More tests => 9;
+use Test::More tests => 15;
 
 sub BEGIN {
     use_ok('Regexp::DeferredExecution');
@@ -35,4 +35,34 @@ is($b, 1, '... but $b was set');
     is($f, "foo",    '$f is foo ...');
     is($b, "ba",    '$b is ba ...');
     is($c, "baz", '... and $c is still baz');
+}
+
+{
+  no Regexp::DeferredExecution;
+  my ($color, $verb, $adj) = ("") x 3;
+  "The quick brown fox jumped over the lazy doggie" =~
+    m/^
+      The\ quick\ (\S+) (?{ $color = $^N })
+      \ fox\ (\S+) (?{ $verb = $^N })
+      \ over\ the\ (\S+) (?{ $adj = $^N })
+      \ dog
+      $/x;
+  is($color, "brown");
+  is($verb, "jumped");
+  is($adj, "lazy");
+}
+
+{
+  use Regexp::DeferredExecution;
+  my ($color, $verb, $adj) = ("") x 3;
+  "The quick brown fox jumped over the lazy doggie" =~
+    m/^
+      The\ quick\ (\S+) (?{ $color = $^N })
+      \ fox\ (\S+) (?{ $verb = $^N })
+      \ over\ the\ (\S+) (?{ $adj = $^N })
+      \ dog
+      $/x;
+  is($color, "");
+  is($verb, "");
+  is($adj, "");
 }

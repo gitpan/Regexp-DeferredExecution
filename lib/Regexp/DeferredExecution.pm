@@ -3,7 +3,7 @@ package Regexp::DeferredExecution;
 use strict;
 use vars qw($VERSION);
 
-$VERSION = '0.04';
+$VERSION = '0.05';
 
 use Text::Balanced qw( extract_multiple
 		       extract_codeblock
@@ -121,6 +121,11 @@ require the counting exercise to figure out which set is $1, $2, etc.
 Of course this mechanism isn't specific to code that makes assignments
 from $^N; there's no doubt a bunch of other clever things you can do
 with this as well. I'll let you know as I run into them.
+
+There's also an article describing the issues with C<(?{})> at
+perl.com:
+
+  http://www.perl.com/pub/a/2004/01/16/regexps.html
 
 =head1 USAGE
 

@@ -1,5 +1,9 @@
 Revision history for Regexp::DeferredExecution.
 
+0.05  Sat Jan 17 09:45:54 2004
+	- added tests for multiple execution
+	- mention perl.com article in docs
+
 0.04  Fri Jan 16 12:03:44 2004
 	- bug fix to make multiple code blocks work again; local @c
           was obliterating everything (fix local @c = @c).
